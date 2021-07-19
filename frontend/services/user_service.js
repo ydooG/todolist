@@ -2,7 +2,9 @@ import axios from "axios";
 import Routes from "../src/api/Routes";
 import {authHeader} from "../helpers/auth-header";
 
-export const USER_OBJECT_NAME = 'user';
+export const USER_FIELD_NAME = 'user';
+export const TOKEN_FIELD_NAME = 'token';
+
 const userService = {
   login,
   logout,
@@ -19,16 +21,16 @@ function login(username, password) {
   })
     .then(function (resp_data) {
       if (resp_data.data.access) {
-        let username = resp_data.data.username;
         let token = resp_data.data.access;
-        localStorage.setItem(USER_OBJECT_NAME, JSON.stringify({username, token}));
+        localStorage.setItem(TOKEN_FIELD_NAME, token)
+        localStorage.setItem(USER_FIELD_NAME, JSON.stringify(resp_data.data.user));
       }
       return resp_data;
     })
 }
 
 function logout() {
-  localStorage.removeItem(USER_OBJECT_NAME);
+  localStorage.removeItem(USER_FIELD_NAME);
 }
 
 function singup(username, password) {
@@ -41,6 +43,6 @@ function singup(username, password) {
 }
 
 function isAuthenticated() {
-  return authHeader() !== {};
+  return !!authHeader();
 }
 export default userService;

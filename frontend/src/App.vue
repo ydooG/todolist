@@ -38,7 +38,7 @@ export default {
         let username = event.target.elements.username.value;
         let password = event.target.elements.password.value;
         let result = userService.login(username, password);
-        console.log(result.data);
+        this.$forceUpdate();
       }
     },
   computed: {

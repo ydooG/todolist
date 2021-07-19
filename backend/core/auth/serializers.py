@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 User = get_user_model()
 
@@ -22,3 +23,16 @@ class UserSignUpSerializer(serializers.ModelSerializer):
         user.save()
 
         return user
+
+
+class TokenObtainSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super(TokenObtainSerializer, self).validate(attrs)
+        refresh = self.get_token(self.user)
+        data['refresh'] = str(refresh)
+        data['access'] = str(refresh.access_token)
+        data['user'] = {
+            'id': self.user.id,
+            'username': self.user.username
+        }
+        return data
